@@ -24,3 +24,4 @@ langchain_groq  # Remplacez par la version spécifique si disponible
 openai
 finnhub-python
 xlsxwriter
+statsmodels
