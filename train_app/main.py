@@ -51,6 +51,10 @@ with st.sidebar:
 st.sidebar.title("📊 Tableau de Bord")
 st.sidebar.info("Téléversez vos données pour commencer.")
 uploaded_file = st.sidebar.file_uploader("Téléversez le fichier Excel", type=["xlsx", "xls"])
+# Ajout d'un champ pour définir le poids cible
+st.sidebar.subheader("🔧 Ajustez vos paramètres")
+poids_cible = st.sidebar.number_input("Entrez votre poids cible (kg)", min_value=0.0, value=70.0, step=0.5)
+
 
 # Tableau de bord
 st.title("FitTrack App")
