@@ -75,6 +75,24 @@ if uploaded_file:
         data["Moyenne Mobile 7 Jours"] = data["Calories journalières"].rolling(window=7).mean()
         data["Déficit Calorique"] = data["Calories journalières"] - data["Calories Consommées"]
 
+        # Calcul du déficit calorique total
+        total_deficit = data["Déficit Calorique"].sum()
+
+        # Calcul du poids perdu en fonction du déficit calorique
+        poids_perdu_lbs = total_deficit / 3500  # 3500 kcal = 1 lb
+        poids_perdu_kg = poids_perdu_lbs * 0.453592  # Conversion lbs en kg
+
+        # Ajout dans le tableau de bord principal
+        st.markdown("### 💡 Poids Potentiellement Perdu")
+        col1, col2 = st.columns(2)
+
+        col1.metric("Poids Perdu (lbs)", f"{poids_perdu_lbs:.2f} lbs")
+        col2.metric("Poids Perdu (kg)", f"{poids_perdu_kg:.2f} kg")
+
+        # Mise à jour des données affichées dans le tableau
+        data["Poids Perdu (lbs)"] = total_deficit / 3500
+        data["Poids Perdu (kg)"] = data["Poids Perdu (lbs)"] * 0.453592
+
         # Structure des onglets
         tab1, tab2, tab3, tab4 = st.tabs(["📋 Données", "📈 Visualisations", "💪 Analyse Avancée", "🔧 Ajustements"])
 
