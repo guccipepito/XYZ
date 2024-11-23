@@ -242,6 +242,33 @@ if uploaded_file:
                             labels={"Calories Entraînement": "Calories brûlées", "Déficit Calorique": "Déficit (kcal)"},
                             trendline="ols")
             st.plotly_chart(fig9, use_container_width=True)
+
+            fig1 = px.line(data, x="Date", y="Déficit Calorique",
+                       title="Évolution du Déficit Calorique",
+                       labels={"Date": "Date", "Déficit Calorique": "Déficit (kcal)"})
+            # Ajout de la ligne représentant le poids cible
+            fig1.add_hline(y=poids_cible, line_dash="dot", line_color="red", annotation_text="Poids cible (kg)")
+            st.plotly_chart(fig1, use_container_width=True)
+
+            # Graphique 2 : Calories journalières vs consommées avec poids cible
+            fig2 = px.line(data, x="Date", y=["Calories journalières", "Calories Consommées"],
+                        title="Tendance des Calories : Journalières vs Consommées",
+                        labels={"value": "Calories (kcal)", "variable": "Type"})
+            # Ajout de la ligne représentant le poids cible
+            fig2.add_hline(y=poids_cible, line_dash="dot", line_color="red", annotation_text="Poids cible (kg)")
+            st.plotly_chart(fig2, use_container_width=True)
+
+            # Graphique 3 : Répartition des macronutriments
+            fig3 = px.area(data, x="Date", y=["Proteines consommées", "Glucides consommées", "Lipides consommées"],
+                        title="Évolution des Macronutriments Consommés",
+                        labels={"value": "Quantité (g)", "variable": "Macronutriment"})
+            st.plotly_chart(fig3, use_container_width=True)
+
+            # Résumé
+            st.subheader("💡 Résumé")
+            st.metric("Poids potentiellement perdu (kg)", f"{poids_perdu_kg:.2f} kg")
+            st.metric("Poids cible", f"{poids_cible:.2f} kg")
+        ####
         # Onglet 3 : Analyse Avancée
         with tab3:
             
