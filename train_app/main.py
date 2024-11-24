@@ -204,6 +204,9 @@ if uploaded_file:
                                     data["Lipides consommées"].mean()],
                             title="Répartition Moyenne des Macronutriments")
                 st.plotly_chart(fig4, use_container_width=True)
+            
+    
+                
 
             # Nouveaux graphiques
             st.markdown("### 📊 Graphiques supplémentaires")
@@ -247,6 +250,9 @@ if uploaded_file:
         # Onglet 3 : Analyse Avancée
         with tab3:
             
+            import numpy as np
+            import plotly.graph_objects as go
+
             st.markdown("### Corrélations et Analyse")
             corr_matrix = data[["Calories Entraînement", "Temps Entraînement", "Calories journalières", "Déficit Calorique"]].corr()
             #st.dataframe(corr_matrix)
@@ -257,6 +263,81 @@ if uploaded_file:
             st.markdown("### Répartition des Déficits")
             fig_hist = px.histogram(data, x="Déficit Calorique", nbins=20, title="Histogramme des Déficits Caloriques")
             st.plotly_chart(fig_hist, use_container_width=True)
+
+            # Données
+            starting_weight = 85  # Poids initial en kg
+            target_weight = 68   # Poids cible en kg
+            weeks = 12  # Nombre de semaines
+            caloric_deficit_per_day = data['Déficit Calorique'].mean()  # Exemple de déficit calorique moyen par jour en calories
+            calories_per_kg = 7700  # Calories nécessaires pour perdre 1 kg de graisse
+            days_in_week = 7  # Nombre de jours dans une semaine
+
+           
+            # Calcul de la perte de poids et du déficit calorique cumulé
+            weight_loss_per_day = caloric_deficit_per_day / calories_per_kg  # Perte de poids par jour (kg)
+            weight_loss_per_week = weight_loss_per_day * days_in_week  # Perte de poids par semaine (kg)
+
+            # Liste des semaines
+            weeks_list = np.arange(1, weeks + 1)
+
+            # Calcul du poids projeté à la fin de chaque semaine
+            weights = [starting_weight - (i * weight_loss_per_week) for i in range(weeks)]
+
+            # Calcul du déficit calorique cumulé
+            caloric_deficit_cumulative = [caloric_deficit_per_day * days_in_week * i for i in range(weeks)]
+
+            # Création du graphique avec Plotly
+            fig = go.Figure()
+
+            # Trace du poids projeté
+            fig.add_trace(go.Scatter(
+                x=weeks_list,
+                y=weights,
+                mode='lines+markers',
+                name='Poids Projeté (kg)',
+                line=dict(color='blue'),
+                marker=dict(color='blue', size=8)
+            ))
+
+            # Trace du déficit calorique cumulé
+            fig.add_trace(go.Scatter(
+                x=weeks_list,
+                y=caloric_deficit_cumulative,
+                mode='lines+markers',
+                name='Déficit Calorique Cumulé (kcal)',
+                line=dict(color='red', dash='dot'),
+                marker=dict(color='red', size=8)
+            ))
+
+            # Ajout du poids cible en ligne pointillée
+            fig.add_trace(go.Scatter(
+                x=[1, 12],
+                y=[target_weight, target_weight],
+                mode='lines',
+                name='Poids Cible (68 kg)',
+                line=dict(color='green', dash='dash')
+            ))
+
+            # Mise en page du graphique
+            fig.update_layout(
+                title='Projection de Perte de Poids et Déficit Calorique sur 12 Semaines',
+                xaxis_title='Semaine',
+                yaxis_title='Poids (kg)',
+                yaxis2=dict(
+                    title='Déficit Calorique Cumulé (kcal)',
+                    overlaying='y',
+                    side='right'
+                ),
+                plot_bgcolor='white',
+                template='plotly_dark',
+                legend=dict(
+                    x=0.7,
+                    y=0.9
+                )
+            )
+            st.plotly_chart(fig)
+
+
 
         # Onglet 4 : Ajustements
         with tab4:
